@@ -1,17 +1,22 @@
 const db = require('../database/db')
 const { validationResult } = require('express-validator')
 
-const checkIfExists = (table, id) => {
+const checkIfExists = async (table, id) => {
     const query = `SELECT COUNT(*) FROM ${table} WHERE id=${id}`
 
-    db.query(query, (req, res) => {
-        console.log('res', res)
+    const count = await db.query(query, (err, res) => {
+        if(err) {
+            console.log('err', err)
+            throw err
+        }
+
+        return Object.assign({}, res[0])['COUNT(*)']
     })
 
-    return 'hello'
+    return count
 }
 
-const storeSnippet = (req, res) => {
+const storeSnippet = async (req, res) => {
     const errors = validationResult(req)
 
     const {language_id, snippet } = req.body
@@ -20,7 +25,14 @@ const storeSnippet = (req, res) => {
         return res.status(422).json(errors)
     }
 
-    const validLanguageId = checkIfExists('languages', language_id)
+    const validLanguageId = await checkIfExists('languages', language_id)
+
+    if(!validLanguageId) {
+        return res.status(404).json({
+            success: false,
+            message: 'Language not found'
+        })
+    }
 
     const query = `INSERT INTO snippets (language_id, snippet) VALUES(${db.escape(language_id)}, ${db.escape(snippet)})`
 
