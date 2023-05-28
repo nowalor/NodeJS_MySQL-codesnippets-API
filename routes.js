@@ -1,8 +1,16 @@
 const express = require('express')
-const { storeSnippet } = require('./controllers/snippetController')
+const {check} = require('express-validator')
+
+
+const {storeSnippet} = require('./controllers/snippetController')
 
 const router = express.Router()
 
-router.post('/snippets', storeSnippet)
+const postSnippetRules = [
+    check('language_id').notEmpty().isNumeric(),
+    check('snippet').notEmpty().isString()
+]
+
+router.post('/snippets', postSnippetRules, storeSnippet)
 
 module.exports = router
