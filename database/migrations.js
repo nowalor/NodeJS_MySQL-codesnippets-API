@@ -1,7 +1,5 @@
 const db = require('./db.js')
 
-db.connect()
-
 const createLanguagesTable = () => {
     const sql = 'CREATE TABLE IF NOT EXISTS languages(id int AUTO_INCREMENT, name VARCHAR(255), PRIMARY KEY (id))'
 
@@ -27,7 +25,7 @@ const createLanguagesTable = () => {
 // }
 
 const createSnippetsTable = () => {
-    const sql = 'CREATE TABLE IF NOT EXISTS snippets(id int AUTO_INCREMENT, language_id int, snippet VARCHAR(255))'
+    const sql = 'CREATE TABLE IF NOT EXISTS snippets(id int AUTO_INCREMENT, language_id int, snippet VARCHAR(255), PRIMARY KEY (id))'
 
     db.query(sql, () => console.log('Snippets table created'))
 }
