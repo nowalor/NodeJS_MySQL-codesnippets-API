@@ -1,9 +1,12 @@
 const db = require("../database/db");
-const checkIfExists = async (table, id) => {
-    const query = `SELECT COUNT(*) FROM ${table} WHERE id=${id}`
+const checkIfExists = async (table, value, field = 'id') => {
+    const query = `SELECT COUNT(*)
+                   FROM ${table}
+                   WHERE ${field} = ?`
+    const values = [value]
 
-    const count = await db.query(query, (err, res) => {
-        if(err) {
+    const count = await db.query(query, values, (err, res) => {
+        if (err) {
             console.log('err', err)
             throw err
         }
@@ -14,4 +17,4 @@ const checkIfExists = async (table, id) => {
     return count
 }
 
-module.exports = { checkIfExists }
+module.exports = {checkIfExists}
