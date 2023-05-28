@@ -1,6 +1,7 @@
 const express = require('express')
-const mysql = require('mysql')
-const dotenv = require('dotenv').config()
+require('dotenv').config()
+const db = require('./db.js')
+
 
 const port = process.env.PORT
 
