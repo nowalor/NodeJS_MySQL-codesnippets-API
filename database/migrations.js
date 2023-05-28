@@ -14,19 +14,26 @@ const createLanguagesTable = () => {
     })
 }
 
-const seedLanguagesTable = () => {
-    const sql = 'INSERT INTO languages(name) VALUES("TypeScript"),("HTML"),("CSS")'
+// const seedLanguagesTable = () => {
+//     const sql = 'INSERT INTO languages(name) VALUES("TypeScript"),("HTML"),("CSS")'
+//
+//     db.query(sql, (err, res) => {
+//         if (err) {
+//             throw err
+//         }
+//
+//         console.log('Languages table seeded')
+//     })
+// }
 
-    db.query(sql, (err, res) => {
-        if (err) {
-            throw err
-        }
+const createSnippetsTable = () => {
+    const sql = 'CREATE TABLE IF NOT EXISTS snippets(id int AUTO_INCREMENT, language_id int, snippet VARCHAR(255))'
 
-        console.log('Languages table seeded')
-    })
+    db.query(sql, () => console.log('Snippets table created'))
 }
 
 createLanguagesTable()
-seedLanguagesTable()
+// seedLanguagesTable()
+createSnippetsTable()
 
 db.end()
