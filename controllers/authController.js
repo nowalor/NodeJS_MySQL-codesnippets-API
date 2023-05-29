@@ -64,7 +64,30 @@ const login = async (req, res) => {
         })
     }
 
-    return res.send('end of login controller')
+    const query = 'SELECT * FROM users WHERE email = ?';
+    const values = [email]
+
+    db.query(query, values, (err, dbRes) => {
+        if(err) {
+            throw err
+        }
+
+        const data = Object.assign({}, dbRes[0])
+
+        const isMatch = bcrypt.compareSync(password, data.password)
+
+        if(!isMatch) {
+            return res.status(422).json({
+                success: false,
+                message: 'Invalid credentials'
+            })
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: 'User logged in'
+        })
+    })
 }
 
 module.exports = {register, login}
