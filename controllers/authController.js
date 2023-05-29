@@ -1,6 +1,6 @@
-const {validationResult} = require('express-validator')
+const { validationResult } = require('express-validator')
 const bcrypt = require('bcrypt')
-const { checkIfExists} = require('../helpers/validation')
+const { checkIfExists } = require('../helpers/validation')
 
 const db = require('../database/db')
 
@@ -53,7 +53,18 @@ const register = async(req, res) => {
 }
 
 const login = async (req, res) => {
-    res.send('hello login')
+    const { email, password} = req.body
+
+    const errors = validationResult(req)
+
+    if(!errors.isEmpty()) {
+        return res.status(422).json({
+            success: false,
+            errors,
+        })
+    }
+
+    return res.send('end of login controller')
 }
 
 module.exports = {register, login}
