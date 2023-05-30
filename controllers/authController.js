@@ -2,6 +2,7 @@ const { validationResult } = require('express-validator')
 const bcrypt = require('bcrypt')
 const { checkIfExists } = require('../helpers/validation')
 const jwt = require('jsonwebtoken')
+const  authMiddleware  = require('../middlewares/authMiddleware')
 
 const db = require('../database/db')
 
@@ -99,4 +100,8 @@ const login = async (req, res) => {
     })
 }
 
-module.exports = {register, login}
+const logout = async (req, res) => {
+    res.send('protected logout route')
+}
+
+module.exports = {register, login, logout}

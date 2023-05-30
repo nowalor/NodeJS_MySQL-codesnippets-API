@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken')
 const authMiddleware = (req, res, next) => {
     const jwtSecret = process.env.SECRET_JWT_KEY
 
-    const authHeader = req.headers('authorization')
+    const authHeader = req.headers['authorization']
 
     if (typeof authHeader === 'undefined') {
         return res.status(403).json({
@@ -25,4 +25,4 @@ const authMiddleware = (req, res, next) => {
     return next()
 }
 
-export default authMiddleware
+module.exports = authMiddleware
