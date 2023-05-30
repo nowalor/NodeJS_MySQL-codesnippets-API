@@ -1,8 +1,11 @@
 const { validationResult } = require('express-validator')
 const bcrypt = require('bcrypt')
 const { checkIfExists } = require('../helpers/validation')
+const jwt = require('jsonwebtoken')
 
 const db = require('../database/db')
+
+const jwtSecret = process.env.SECRET_JWT_KEY
 
 const register = async(req, res) => {
     const errors = validationResult(req)
@@ -75,6 +78,7 @@ const login = async (req, res) => {
         const data = Object.assign({}, dbRes[0])
 
         const isMatch = bcrypt.compareSync(password, data.password)
+        delete data.password
 
         if(!isMatch) {
             return res.status(422).json({
@@ -83,9 +87,14 @@ const login = async (req, res) => {
             })
         }
 
+        const token = jwt.sign(data, jwtSecret)
+
         return res.status(200).json({
             success: true,
-            message: 'User logged in'
+            data: {
+                user: data,
+                token,
+            }
         })
     })
 }
