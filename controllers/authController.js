@@ -1,8 +1,11 @@
-const {validationResult} = require('express-validator')
+const { validationResult } = require('express-validator')
 const bcrypt = require('bcrypt')
-const { checkIfExists} = require('../helpers/validation')
+const { checkIfExists } = require('../helpers/validation')
+const jwt = require('jsonwebtoken')
 
 const db = require('../database/db')
+
+const jwtSecret = process.env.SECRET_JWT_KEY
 
 const register = async(req, res) => {
     const errors = validationResult(req)
@@ -15,7 +18,6 @@ const register = async(req, res) => {
 
    const isEmailTaken = await checkIfExists('users', email, 'email')
 
-    // console.log('isEmailTaken', isEmailTaken)
     if(isEmailTaken === 1) {
         return res.status(422).json({
             success: false,
@@ -41,19 +43,61 @@ const register = async(req, res) => {
                 }
 
 
-                res.status(200).json({
+                return res.status(200).json({
                     success: true,
                     message: "User created"
                 })
             })
         })
     })
-
-    return res.send('authController.register')
 }
 
 const login = async (req, res) => {
-    res.send('hello login')
+    const { email, password} = req.body
+
+    const errors = validationResult(req)
+
+    if(!errors.isEmpty()) {
+        return res.status(422).json({
+            success: false,
+            errors,
+        })
+    }
+
+    const query = 'SELECT * FROM users WHERE email = ?';
+    const values = [email]
+
+    db.query(query, values, (err, dbRes) => {
+        if(err) {
+            throw err
+        }
+
+        const data = Object.assign({}, dbRes[0])
+
+        const isMatch = bcrypt.compareSync(password, data.password)
+        delete data.password
+
+        if(!isMatch) {
+            return res.status(422).json({
+                success: false,
+                message: 'Invalid credentials'
+            })
+        }
+
+        const token = jwt.sign(data, jwtSecret)
+
+        return res.status(200).json({
+            success: true,
+            data: {
+                user: data,
+                token,
+            }
+        })
+    })
 }
 
-module.exports = {register, login}
+const logout = async (req, res) => {
+    res.send('protected logout route')
+}
+
+module.exports = {register, login, logout}

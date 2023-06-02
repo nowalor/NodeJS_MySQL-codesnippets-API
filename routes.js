@@ -2,8 +2,9 @@ const express = require('express')
 const {check} = require('express-validator')
 
 
-const {register, login} = require('./controllers/authController')
-const {storeSnippet} = require('./controllers/snippetController')
+const {register, login, logout} = require('./controllers/authController')
+const {storeSnippet, getAllSnippets} = require('./controllers/snippetController')
+const  authMiddleware  = require('./middlewares/authMiddleware')
 
 const router = express.Router()
 
@@ -22,8 +23,13 @@ const postSnippetRules = [
     check('snippet').notEmpty().isString()
 ]
 
+// Auth routes
 router.post('/auth/login', loginRules, login)
 router.post('/auth/register', registerRules, register)
-router.post('/snippets', postSnippetRules, storeSnippet)
+router.post('/auth/logout', authMiddleware,logout)
+
+// Snippet routes
+router.get('/snippets', getAllSnippets)
+router.post('/snippets', postSnippetRules, authMiddleware, storeSnippet)
 
 module.exports = router
