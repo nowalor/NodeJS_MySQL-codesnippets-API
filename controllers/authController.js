@@ -18,7 +18,6 @@ const register = async(req, res) => {
 
    const isEmailTaken = await checkIfExists('users', email, 'email')
 
-    // console.log('isEmailTaken', isEmailTaken)
     if(isEmailTaken === 1) {
         return res.status(422).json({
             success: false,

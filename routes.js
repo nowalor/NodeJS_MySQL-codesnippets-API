@@ -29,6 +29,6 @@ router.post('/auth/register', registerRules, register)
 router.post('/auth/logout', authMiddleware,logout)
 
 // Snippet routes
-router.post('/snippets', postSnippetRules, storeSnippet)
+router.post('/snippets', postSnippetRules, authMiddleware, storeSnippet)
 
 module.exports = router
