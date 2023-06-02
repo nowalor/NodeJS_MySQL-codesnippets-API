@@ -2,7 +2,6 @@ const { validationResult } = require('express-validator')
 const bcrypt = require('bcrypt')
 const { checkIfExists } = require('../helpers/validation')
 const jwt = require('jsonwebtoken')
-const  authMiddleware  = require('../middlewares/authMiddleware')
 
 const db = require('../database/db')
 

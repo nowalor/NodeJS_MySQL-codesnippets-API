@@ -1,4 +1,5 @@
-const db = require("../database/db");
+const db = require("../database/db")
+
 const checkIfExists = async (table, value, field = 'id') => {
     const query = `SELECT COUNT(*)
                    FROM ${table}
