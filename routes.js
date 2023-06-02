@@ -3,7 +3,7 @@ const {check} = require('express-validator')
 
 
 const {register, login, logout} = require('./controllers/authController')
-const {storeSnippet} = require('./controllers/snippetController')
+const {storeSnippet, getAllSnippets} = require('./controllers/snippetController')
 const  authMiddleware  = require('./middlewares/authMiddleware')
 
 const router = express.Router()
@@ -29,6 +29,7 @@ router.post('/auth/register', registerRules, register)
 router.post('/auth/logout', authMiddleware,logout)
 
 // Snippet routes
+router.get('/snippets', getAllSnippets)
 router.post('/snippets', postSnippetRules, authMiddleware, storeSnippet)
 
 module.exports = router

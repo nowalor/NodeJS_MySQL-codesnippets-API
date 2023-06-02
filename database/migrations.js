@@ -52,7 +52,7 @@ const createSnippetsTable = () => {
     const sql = 'CREATE TABLE IF NOT EXISTS snippets(id int AUTO_INCREMENT, user_id int, language_id int, snippet VARCHAR(255), PRIMARY KEY (id), FOREIGN KEY (user_id) REFERENCES users(id))'
 
     db.query(sql, (err) => {
-        if(err) throw err
+        if (err) throw err
 
         console.log('Snippets table created')
     })

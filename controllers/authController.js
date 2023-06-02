@@ -43,15 +43,13 @@ const register = async(req, res) => {
                 }
 
 
-                res.status(200).json({
+                return res.status(200).json({
                     success: true,
                     message: "User created"
                 })
             })
         })
     })
-
-    return res.send('authController.register')
 }
 
 const login = async (req, res) => {

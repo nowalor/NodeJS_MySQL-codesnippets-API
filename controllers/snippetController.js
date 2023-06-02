@@ -2,6 +2,23 @@ const db = require('../database/db')
 const {validationResult} = require('express-validator')
 const {checkIfExists} = require('../helpers/validation')
 
+const getAllSnippets = async (req, res) => {
+    const query = 'SELECT * FROM snippets'
+
+    db.query(query, (err, dbRes) => {
+        if (err) throw err
+
+        console.log('dbRes', dbRes)
+
+        const data = Object.assign({}, dbRes)
+
+        return res.status(200).json({
+            success: true,
+            data,
+        })
+    })
+}
+
 const storeSnippet = async (req, res) => {
     const errors = validationResult(req)
 
@@ -20,18 +37,28 @@ const storeSnippet = async (req, res) => {
         })
     }
 
-    const query = `INSERT INTO snippets (language_id, snippet)
-                   VALUES (${db.escape(language_id)}, ${db.escape(snippet)})`
+    const userId = req.auth.id
 
-    db.query(query, (err, res) => {
+    const query = `INSERT INTO snippets (user_id, language_id, snippet)
+                   VALUES (?, ?, ?)`
+
+    const values = [userId, parseInt(language_id), db.escape(snippet)]
+
+    db.query(query, values, (err) => {
         if (err) {
-            console.log('err', err)
-
-            res.send('Error')
+            throw err
         }
-    })
 
-    return res.send('POST req to snippetController.storeSnippet')
+       const newSnippet = {
+            ...req.body,
+           user_id: userId,
+       }
+
+        return res.status(201).json({
+            success: true,
+            snippet: newSnippet,
+        })
+    })
 }
 
-module.exports = {storeSnippet}
+module.exports = {getAllSnippets, storeSnippet}
